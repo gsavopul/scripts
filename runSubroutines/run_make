@@ -1,0 +1,12 @@
+#!/bin/csh -f
+# Το υποπρόγραμμα δεχεται τις σημαίες και το αρχείο στο οποίο θα ενεργήσει από
+# τη διαδικασία run. Οι σημαίες βρίσκονται αποθηκευμένες στην μεταβλητή
+# RUN_FLAGS και το αρχείο δίνεται ως το (μοναδικό) όρισμα της διαδικασίας argv[1].
+
+set sourcefile = $argv[1]
+set executablefile = $sourcefile:r
+
+make -f $sourcefile
+clear
+./$executablefile
+if ( `echo $RUN_FLAGS | grep -c -e "-k"` != 1 ) rm $executablefile *.o *.mod	

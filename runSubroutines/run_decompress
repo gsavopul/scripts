@@ -1,0 +1,54 @@
+#!/bin/csh -f
+# Το υποπρόγραμμα δεχεται τις σημαίες και το αρχείο στο οποίο θα ενεργήσει από
+# τη διαδικασία run. Οι σημαίες βρίσκονται αποθηκευμένες στην μεταβλητή
+# RUN_FLAGS και το αρχείο δίνεται ως το (μοναδικό) όρισμα της διαδικασίας argv[1].
+
+set sourcefile = $argv[1]
+set fileext = $sourcefile:e
+set fileroot = $sourcefile:r
+
+switch ( $fileext )
+
+case "tar":
+case "TAR":
+	tar -xvf $sourcefile
+	if ( `echo $RUN_FLAGS | grep -c -e "-k"` != 1 )	 rm $sourcefile
+	breaksw
+				
+case "zip":
+case "ZIP":
+	unzip $sourcefile
+	if ( `echo $RUN_FLAGS | grep -c -e "-k"` != 1 )	 rm $sourcefile
+	breaksw
+
+case "gz":
+case "GZ":
+	if ( `echo $RUN_FLAGS | grep -c -e "-k"` != 1 )	 then
+		gunzip $sourcefile
+	else
+		gunzip -k $sourcefile
+	endif
+
+#	Έλεγχος για αρχεία .tar.gz
+	if ( $fileroot:e == "tar" || $fileroot:e == "TAR" ) then     
+		tar -xvf $fileroot
+		rm $fileroot
+	endif
+
+	breaksw	
+
+case "tgz":
+case "TGZ":
+	tar -xvf $sourcefile
+	if ( `echo $RUN_FLAGS | grep -c -e "-k"` != 1 )	 rm $sourcefile
+	breaksw
+	
+default:	
+	
+endsw
+
+
+
+
+
+

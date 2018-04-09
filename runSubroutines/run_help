@@ -1,0 +1,19 @@
+#!/bin/csh
+# Βοήθεια για την run
+clear
+echo "Usage: run (list of flags) (list of files)"
+echo " "
+echo "Accepted flags are: "
+echo "-c (compile),"
+echo "-k (keep, no delete),"
+echo "-b (indicates use of Boost C++ libraries),"
+echo "-q (indicates Qt c++ project),"
+echo "-p (for Qt projects only, create .pro file and stop) "
+echo "-t (tex), and"
+echo "-h (prints this help screen)"
+echo " "
+echo "Flags can be combined, or intermixed with files, thus"
+echo "the following commands have exactly the same effect:"
+echo "run -qk (list of files)"
+echo "run -q -k (list of files)"
+echo "run -q (list of files) -k"
