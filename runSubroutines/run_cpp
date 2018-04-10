@@ -10,7 +10,24 @@ set projectfile = $executablefile.pro
 
 if ( `echo $RUN_FLAGS | grep -c -e "-b"` == 1 ) then
     set boost
-    set boostLink = "-lboost_atomic -lboost_chrono -lboost_container -lboost_context -lboost_coroutine -lboost_date_time -lboost_exception -lboost_filesystem -lboost_graph -lboost_iostreams -lboost_locale -lboost_log -lboost_log_setup -lboost_math_c99 -lboost_math_c99f -lboost_math_c99l -lboost_math_tr1 -lboost_math_tr1f -lboost_math_tr1l -lboost_prg_exec_monitor -lboost_program_options -lboost_python -lboost_random -lboost_regex -lboost_serialization -lboost_signals -lboost_stacktrace_addr2line -lboost_stacktrace_backtrace -lboost_stacktrace_basic -lboost_stacktrace_noop -lboost_system -lboost_test_exec_monitor -lboost_thread -lboost_timer -lboost_type_erasure -lboost_unit_test_framework -lboost_wave -lboost_wserialization"
+    set boostLink = "-lboost_atomic -lboost_chrono -lboost_test_exec_monitor"
+	set boostLink = "$boostLink -lboost_context -lboost_coroutine"
+	set boostLink = "$boostLink -lboost_date_time -lboost_exception"
+	set boostLink = "$boostLink -lboost_filesystem -lboost_graph"
+	set boostLink = "$boostLink -lboost_iostreams -lboost_locale"
+	set boostLink = "$boostLink -lboost_log -lboost_log_setup"
+	set boostLink = "$boostLink -lboost_math_c99 -lboost_math_c99f"
+	set boostLink = "$boostLink -lboost_math_c99l -lboost_math_tr1"
+	set boostLink = "$boostLink -lboost_math_tr1f -lboost_math_tr1l"
+	set boostLink = "$boostLink -lboost_prg_exec_monitor -lboost_python"
+	set boostLink = "$boostLink -lboost_random -lboost_regex -lboost_signals"
+	set boostLink = "$boostLink -lboost_program_options -lboost_serialization"
+	set boostLink = "$boostLink -lboost_stacktrace_addr2line -lboost_system"
+	set boostLink = "$boostLink -lboost_stacktrace_backtrace -lboost_timer"
+	set boostLink = "$boostLink -lboost_stacktrace_basic -lboost_thread"
+	set boostLink = "$boostLink -lboost_stacktrace_noop -lboost_type_erasure"
+	set boostLink = "$boostLink -lboost_unit_test_framework -lboost_wave"
+	set boostLink = "$boostLink -lboost_wserialization -lboost_container"
 endif
 
 if ( `echo $RUN_FLAGS | grep -c -e "-q"` == 1 ) set qt
@@ -26,7 +43,9 @@ if ( `echo $RUN_FLAGS | grep -c -e "-q"` == 1 ) then				# Πρόγραμμα Qt
 			qmake $projectfile
 			make
 			./$executablefile
-			if ( `echo $RUN_FLAGS | grep -c -e "-k"` != 1 )	rm Makefile $executablefile *.pro *.o ???_*.cpp
+			if ( `echo $RUN_FLAGS | grep -c -e "-k"` != 1 )	then
+				rm Makefile $executablefile *.pro *.o ???_*.cpp
+			endif
 		endif
 
 else

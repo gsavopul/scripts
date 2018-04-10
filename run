@@ -53,11 +53,16 @@ foreach orisma ( $argv[*] )
 		exit (1)
 		breaksw
 	case "-$anyflag":				# Σημαίες
-		if ( `echo $flags | grep -c -e $orisma` == 0 )	set flags = ( $flags $orisma )
+		if ( `echo $flags | grep -c -e $orisma` == 0 )	then
+			set flags = ( $flags $orisma )
+		endif
 		breaksw
 	case "-$anyflag$anyflag":				# Σημαίες
 		foreach option ( $acceptedFlags[*] )
-			if ( `echo $orisma | grep -c -e "$option"` == 1 && `echo $flags | grep -c -e "-$option"` == 0 ) set flags = ( $flags "-$option" )
+			if ( `echo $orisma | grep -c -e "$option"` == 1 \
+			&& `echo $flags | grep -c -e "-$option"` == 0 ) then
+				set flags = ( $flags "-$option" )
+			endif
 		end
 		breaksw
 	case "-*":
@@ -85,11 +90,16 @@ if ( $#files != 0 ) then
 			exit (1)
 			breaksw
 		case "-$anyflag":
-			if ( `echo $flags | grep -c -e $orisma` == 0 )	set flags = ( $flags $orisma )
+			if ( `echo $flags | grep -c -e $orisma` == 0 )	then
+				set flags = ( $flags $orisma )
+			endif
 			breaksw
 		case "-$anyflag$anyflag":				# Σημαίες
 			foreach option ( $acceptedFlags[*] )
-				if ( `echo $orisma | grep -c -e "$option"` == 1 && `echo $flags | grep -c -e "-$option"` == 0 ) set flags = ( $flags "-$option" )
+				if ( `echo $orisma | grep -c -e "$option"` == 1 \
+				&& `echo $flags | grep -c -e "-$option"` == 0 ) then
+					set flags = ( $flags "-$option" )
+				endif
 			end
 			breaksw
 		case "-*":
