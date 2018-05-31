@@ -1,0 +1,143 @@
+#!/bin/csh -f
+# Η διαδικασία αλλάζει την κωδικοποίηση αρχείων. Το τελικό αρχείο έχει το ίδιο όνομα με το αρχικό.
+# Χωρίς είσοδο δεδομένων από το χρήστη, η διαδικασία μετατρέπει αρχεία WINDOWS-1253 σε UTF-8.
+# Αν οι απαιτήσεις εισόδου/εξόδου είναι διαφορετικές, ο χρήστης θα πρέπει να εισάγει τα κατάλληλα δεδομένα.
+
+# Μπορεί να δοθεί μία σημαία:
+# -h		: Σηματοδοτεί την εμφάνιση οδηγιών χρήσης για τη διαδικασία
+
+# Τυχόν σημαίες αποθηκεύονται στη μεταβλητή περιβάλλοντος RUN_FLAGS ενώ τα υπόλοιπα
+# ορίσματα στη μεταβλητή arxeia. Νέες σημαίες πρέπει να προστίθενται στη
+# μεταβλητή allflags μέσω της οποίας αυτοματοποιείται η αναγνώριση εκφράσεων
+# όπως η re-encode -hk.
+
+# Μεταβλητές προγράμματος 											- πχ run relativepath/myfile.xxx
+# cfile		- το όρισμα όπως δόθηκε στη γραμμή εντολής				- πχ relativepath/myfile.xxx
+# dirpath	- η διαδρομή											- πχ relativepath
+# fileroot	- το όνομα του αρχείου χωρίς την κατάληξη				- πχ myfile
+# fileext	- η κατάληξη του αρχείου								- πχ xxx
+# filename 	- το όνομα του αρχείου									- πχ myfile.xxx
+
+# Αν δεν υπάρχει διαδρομή, δηλαδή δοθεί μόνο το όνομα του αρχείου (στο
+# παράδειγμα myfile.xxx), τα dirpath και cfile ταυτίζονται. Η διαδικασία
+# ξεκινάει με σάρωση των ορισμάτων και αποθήκευση των σημαιών στην μεταβλητή
+# flags. Ακόμα και αν κάποια σημαία δοθεί περισσότερες από μια φορές εκ
+# παραδρομής, η διαδικασία ελέγχει την μεταβλητή flags και αν η σημαία
+# έχει ήδη καταχωρηθεί εκεί δεν την προσθέτει ξανά. Αν η μεταβλητή arxeia
+# δεν έχει μέλη, δεν δόθηκαν ονόματα αρχείων στην κλήση και αυτά πρέπει να
+# ζητηθούν. Σε αντίθετη περίπτωση μπορεί να ξεκινήσει η εκτέλεση για τα αρχεία
+# που δόθηκαν στην γραμμή εντολής.
+
+set pushdsilent
+set flags = ( )
+set arxeia = ( )
+set acceptedFlags = ( "h" )				# ** TO BE UPDATED IF FLAGS CHANGE **
+set anyflag = "[h]"						# ** TO BE UPDATED IF FLAGS CHANGE **
+
+foreach orisma ( $argv[*] )
+	switch ( $orisma )
+	case "-*h*":
+		goto printHelp
+		exit (1)
+		breaksw
+	case "-$anyflag":				# Σημαίες
+		if ( `echo $flags | grep -c -e $orisma` == 0 )	set flags = ( $flags $orisma )
+		breaksw
+	case "-$anyflag$anyflag":				# Σημαίες
+		foreach option ( $acceptedFlags[*] )
+			if ( `echo $orisma | grep -c -e "$option"` == 1 && `echo $flags | grep -c -e "-$option"` == 0 ) set flags = ( $flags "-$option" )
+		end
+		breaksw
+	case "-*":
+		echo $orisma": Μη αναγνωρίσιμη σημαία"
+		exit (1)
+	default:							# Αρχεία
+		set arxeia = ( $arxeia $orisma )
+	endsw
+end
+
+if ( $#arxeia != 0 ) goto mono_onomata_arxeion
+
+echo -n "Δώσε πηγαία αρχεία για αλλαγή κωδικοποίησης: "
+#  set files=(`gets`)     	      	  	        	# System V
+set files=( $< )										# BSD
+
+if ( $#files != 0 ) then
+
+# Νέος έλεγχος για σημαίες και αρχεία...
+
+	foreach orisma ( $files[*] )
+		switch ( $orisma )
+		case "-*h*":
+			goto printHelp
+			exit (1)
+			breaksw
+		case "-$anyflag":
+			if ( `echo $flags | grep -c -e $orisma` == 0 )	set flags = ( $flags $orisma )
+			breaksw
+		case "-$anyflag$anyflag":				# Σημαίες
+			foreach option ( $acceptedFlags[*] )
+				if ( `echo $orisma | grep -c -e "$option"` == 1 && `echo $flags | grep -c -e "-$option"` == 0 ) set flags = ( $flags "-$option" )
+			end
+			breaksw
+		case "-*":
+			echo $orisma": Μη αναγνωρίσιμη σημαία"
+			exit (1)
+		default:
+			set arxeia = ( $arxeia $orisma )
+		endsw
+	end
+
+mono_onomata_arxeion:
+
+	clear
+	iconv -l
+	echo ""
+
+	echo "Επέλεξε την κωδικοποίηση του αρχείου εισόδου (προεπιλογή WINDOWS-1253): "
+    set inputEncoding = ( $< )
+	if ( $inputEncoding == "" ) set inputEncoding = "WINDOWS-1253"
+    echo ""
+
+	echo "Επέλεξε την κωδικοποίηση του αρχείου εξόδου (προεπιλογή UTF-8): "
+    set outputEncoding = ( $< )
+	if ( $outputEncoding == "" ) set outputEncoding = "UTF-8"
+    echo ""
+    echo "Επιλέχθηκε μετατροπή από $inputEncoding σε $outputEncoding"
+
+	foreach cfile ( $arxeia[*] )
+
+		set dirpath=$cfile:h
+		set fileroot=$cfile:r:t
+		set fileext=$cfile:e:t
+		set filename=$fileroot.$fileext
+		set tmpfile=$fileroot.tmp
+
+		if ( -f $cfile ) then						# Το αρχείο υπάρχει
+			if ( $dirpath != $cfile ) pushd $dirpath
+
+                iconv -f $inputEncoding -t $outputEncoding $filename > $tmpfile
+   				mv $tmpfile $filename
+
+			if ( $dirpath != $cfile ) popd
+
+		else
+			echo "Το αρχείο $cfile δεν υπάρχει"
+			exit 1
+		endif
+	end
+endif
+exit (0)
+
+printHelp:
+clear
+echo "The procedure changes the encoding of text files. Initially, it prints"
+echo "the possible file encodings to the screen and prompts the user to input"
+echo "the initial encoding of the file (default value WINDOWS-1253)"
+echo "It then prompts for the final encoding (default value UTF-8)"
+echo "After completion, all files have the new encoding."
+echo ""
+echo "Use:	re-encode (files)"
+echo ""
+exit (1)
+
