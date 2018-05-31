@@ -34,6 +34,9 @@ set arxeia = ( )
 set acceptedFlags = ( "h" )				# ** TO BE UPDATED IF FLAGS CHANGE **
 set anyflag = "[h]"						# ** TO BE UPDATED IF FLAGS CHANGE **
 
+set default_input_encoding = "WINDOWS-1253"
+set default_output_encoding = "UTF-8"
+
 foreach orisma ( $argv[*] )
 	switch ( $orisma )
 	case "-*h*":
@@ -94,14 +97,14 @@ mono_onomata_arxeion:
 	iconv -l
 	echo ""
 
-	echo "Επέλεξε την κωδικοποίηση του αρχείου εισόδου (προεπιλογή WINDOWS-1253): "
+	echo "Επέλεξε την κωδικοποίηση του αρχείου εισόδου (προεπιλογή $default_input_encoding): "
     set inputEncoding = ( $< )
-	if ( $inputEncoding == "" ) set inputEncoding = "WINDOWS-1253"
+	if ( $inputEncoding == "" ) set inputEncoding = $default_input_encoding
     echo ""
 
-	echo "Επέλεξε την κωδικοποίηση του αρχείου εξόδου (προεπιλογή UTF-8): "
+	echo "Επέλεξε την κωδικοποίηση του αρχείου εξόδου (προεπιλογή $default_output_encoding): "
     set outputEncoding = ( $< )
-	if ( $outputEncoding == "" ) set outputEncoding = "UTF-8"
+	if ( $outputEncoding == "" ) set outputEncoding = $default_output_encoding
     echo ""
     echo "Επιλέχθηκε μετατροπή από $inputEncoding σε $outputEncoding"
 
@@ -135,6 +138,8 @@ echo "The procedure changes the encoding of text files. Initially, it prints"
 echo "the possible file encodings to the screen and prompts the user to input"
 echo "the initial encoding of the file (default value WINDOWS-1253)"
 echo "It then prompts for the final encoding (default value UTF-8)"
+echo "The default encodings are controlled by the variables"
+echo "default_input_encoding and default_output_encoding."
 echo "After completion, all files have the new encoding."
 echo ""
 echo "Use:	re-encode (files)"
