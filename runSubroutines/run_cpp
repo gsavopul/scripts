@@ -8,26 +8,21 @@ set executablefile = $sourcefile:r
 set objectfile = $executablefile.o
 set projectfile = $executablefile.pro
 
+############ Boost linked libraries location - should point to the correct location
+set boostdir = /usr/local/lib
+############
+
+
 if ( `echo $RUN_FLAGS | grep -c -e "-b"` == 1 ) then
-    set boost
-    set boostLink = "-lboost_atomic -lboost_chrono -lboost_test_exec_monitor"
-	set boostLink = "$boostLink -lboost_context -lboost_coroutine"
-	set boostLink = "$boostLink -lboost_date_time -lboost_exception"
-	set boostLink = "$boostLink -lboost_filesystem -lboost_graph"
-	set boostLink = "$boostLink -lboost_iostreams -lboost_locale"
-	set boostLink = "$boostLink -lboost_log -lboost_log_setup"
-	set boostLink = "$boostLink -lboost_math_c99 -lboost_math_c99f"
-	set boostLink = "$boostLink -lboost_math_c99l -lboost_math_tr1"
-	set boostLink = "$boostLink -lboost_math_tr1f -lboost_math_tr1l"
-	set boostLink = "$boostLink -lboost_prg_exec_monitor -lboost_python"
-	set boostLink = "$boostLink -lboost_random -lboost_regex -lboost_signals"
-	set boostLink = "$boostLink -lboost_program_options -lboost_serialization"
-	set boostLink = "$boostLink -lboost_stacktrace_addr2line -lboost_system"
-	set boostLink = "$boostLink -lboost_stacktrace_backtrace -lboost_timer"
-	set boostLink = "$boostLink -lboost_stacktrace_basic -lboost_thread"
-	set boostLink = "$boostLink -lboost_stacktrace_noop -lboost_type_erasure"
-	set boostLink = "$boostLink -lboost_unit_test_framework -lboost_wave"
-	set boostLink = "$boostLink -lboost_wserialization -lboost_container"
+	set boost
+	set boostLink = ""
+#	Pick-up names of Boost linked libraries by searching for their static version in $boostdir
+#	Strip path and extention at first, the "lib" prefix with regular expression substitution with sed, and finally add -l for the g++ link option
+	foreach cfile ( $boostdir/libboost*.a )
+		set filename = $cfile:t:r
+		set filename = `echo $filename | sed 's/libboost/boost/'`
+		set boostLink = "$boostLink -l$filename"
+	end
 endif
 
 if ( `echo $RUN_FLAGS | grep -c -e "-q"` == 1 ) set qt
