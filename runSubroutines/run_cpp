@@ -45,9 +45,9 @@ else
     if ( $?boost ) then
 
     	if ( `echo $RUN_FLAGS | grep -c -e "-c"` == 1 ) then
-	    	g++ -c -std=c++14 -pthread -o $objectfile $sourcefile $boostLink
+	    	g++ -c -std=c++17 -pthread -o $objectfile $sourcefile $boostLink
 	    else
-		    g++ -std=c++14 -pthread -o $executablefile $sourcefile $boostLink
+		    g++ -std=c++17 -pthread -o $executablefile $sourcefile $boostLink
 	    	clear
 		    ./$executablefile
 		    if ( `echo $RUN_FLAGS | grep -c -e "-k"` != 1 ) rm $executablefile
@@ -56,9 +56,9 @@ else
     else
 
         if ( `echo $RUN_FLAGS | grep -c -e "-c"` == 1 ) then
-	    	g++ -c -std=c++14 -pthread -o $objectfile $sourcefile
+	    	g++ -c -std=c++17 -pthread -o $objectfile $sourcefile
 	    else
-		    g++ -std=c++14 -pthread -o $executablefile $sourcefile
+		    g++ -std=c++17 -pthread -o $executablefile $sourcefile
 	    	clear
 		    ./$executablefile
 		    if ( `echo $RUN_FLAGS | grep -c -e "-k"` != 1 ) rm $executablefile
