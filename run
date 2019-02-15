@@ -14,6 +14,7 @@
 # -q		: Σηματοδοτεί ότι πρόκειται για πρόγραμμα Qt
 # -p		: Σε έργα Qt σηματοδοτεί ότι η διαδικασία θα σταματήσει στη δημιουργία του αρχείου .pro
 # -t		: Σηματοδοτεί ότι πρόκειται για κείμενο TeX
+# -g		: Επιτρέπει τη χρήση degugger
 
 # Η διαδικασία μπορεί να δεχτεί περισσότερες από μία σημαίες, τις οποίες και
 # διαχωρίζει από τα υπόλοιπα ορίσματα. Οι σημαίες αποθηκεύονται στην μεταβλητή
@@ -43,8 +44,8 @@
 set pushdsilent
 set flags = ( )
 set arxeia = ( )
-set acceptedFlags = ( "c" "k" "q" "t" "p" "b" )				# ** TO BE UPDATED IF FLAGS CHANGE **
-set anyflag = "[ckqtpb]"									# ** TO BE UPDATED IF FLAGS CHANGE **
+set acceptedFlags = ( "c" "k" "q" "t" "p" "b" "g" )				# ** TO BE UPDATED IF FLAGS CHANGE **
+set anyflag = "[ckqtpbg]"									# ** TO BE UPDATED IF FLAGS CHANGE **
 
 foreach orisma ( $argv[*] )
 	switch ( $orisma )

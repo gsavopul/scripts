@@ -45,11 +45,25 @@ else
     if ( $?boost ) then
 
     	if ( `echo $RUN_FLAGS | grep -c -e "-c"` == 1 ) then
-	    	g++ -c -std=c++17 -pthread -o $objectfile $sourcefile $boostLink
-			set STATUS = $status
+
+			if ( `echo $RUN_FLAGS | grep -c -e "-g"` == 1 ) then
+		    	g++ -c -g -std=c++17 -pthread -o $objectfile $sourcefile $boostLink
+				set STATUS = $status
+			else
+		    	g++ -c -std=c++17 -pthread -o $objectfile $sourcefile $boostLink
+				set STATUS = $status
+			endif
+
 	    else
-		    g++ -std=c++17 -pthread -o $executablefile $sourcefile $boostLink
-			set STATUS = $status
+
+			if ( `echo $RUN_FLAGS | grep -c -e "-g"` == 1 ) then
+			    g++ -g -std=c++17 -pthread -o $executablefile $sourcefile $boostLink
+				set STATUS = $status
+			else
+				g++ -std=c++17 -pthread -o $executablefile $sourcefile $boostLink
+				set STATUS = $status
+			endif
+
 	    	if ( $STATUS == 0 ) clear
 		    ./$executablefile
 		    if ( `echo $RUN_FLAGS | grep -c -e "-k"` != 1 ) rm $executablefile
@@ -58,11 +72,25 @@ else
     else
 
         if ( `echo $RUN_FLAGS | grep -c -e "-c"` == 1 ) then
-	    	g++ -c -std=c++17 -pthread -o $objectfile $sourcefile
-			set STATUS = $status
+
+			if ( `echo $RUN_FLAGS | grep -c -e "-g"` == 1 ) then
+		    	g++ -c -g std=c++17 -pthread -o $objectfile $sourcefile
+				set STATUS = $status
+			else
+		    	g++ -c -std=c++17 -pthread -o $objectfile $sourcefile
+				set STATUS = $status
+			endif
+
 	    else
-		    g++ -std=c++17 -pthread -o $executablefile $sourcefile
-			set STATUS = $status
+
+			if ( `echo $RUN_FLAGS | grep -c -e "-g"` == 1 ) then
+			    g++ -g -std=c++17 -pthread -o $executablefile $sourcefile
+				set STATUS = $status
+			else
+			    g++ -std=c++17 -pthread -o $executablefile $sourcefile
+				set STATUS = $status
+			endif
+
 	    	if ( $STATUS == 0 ) clear
 		    ./$executablefile
 		    if ( `echo $RUN_FLAGS | grep -c -e "-k"` != 1 ) rm $executablefile
