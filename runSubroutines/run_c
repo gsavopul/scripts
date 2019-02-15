@@ -11,7 +11,8 @@ if ( `echo $RUN_FLAGS | grep -c -e "-c"` == 1 ) then
 	gcc -c -o $objectfile $sourcefile -lm
 else
 	gcc -o $executablefile $sourcefile -lm
-	clear
+	set STATUS = $status
+	if ( $STATUS == 0 ) clear
 	./$executablefile
 	if ( `echo $RUN_FLAGS | grep -c -e "-k"` != 1 ) rm $executablefile
 endif
