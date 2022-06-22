@@ -5,7 +5,7 @@
 # tex/latex, και αποσυμπιέζει αρχεία zip, tar, gz. Για πιο πολύπλοκα προγράμματα
 # τα οποία απαιτούν πολλά αρχεία, η διαδικασία μπορεί να τρέξει makefiles
 # τα οποία θα παράξουν τα εκτελέσιμα. Το όνομα του makefile πρέπει να είναι
-# ίδιο με το όνομα του αντίστοιχου εκτελέσιμου που θα παραχθεί, και να έχει
+# [mΜ]akefile ή παρόμοιο με το όνομα του επιθυμητού εκτελέσιμου και με
 # κατάληξη .make. Αποδεκτές σημαίες είναι οι:
 
 # -c		: Σηματοδοτεί ότι θα γίνει μόνο μεταγλώτιση των προγραμμάτων
@@ -14,7 +14,7 @@
 # -q		: Σηματοδοτεί ότι πρόκειται για πρόγραμμα Qt
 # -p		: Σε έργα Qt σηματοδοτεί ότι η διαδικασία θα σταματήσει στη δημιουργία του αρχείου .pro
 # -t		: Σηματοδοτεί ότι πρόκειται για κείμενο TeX
-# -g		: Επιτρέπει τη χρήση degugger
+# -g		: Επιτρέπει τη χρήση degugger και ενεργοποιεί την "ασφαλή" έκδοση της STL
 
 # Η διαδικασία μπορεί να δεχτεί περισσότερες από μία σημαίες, τις οποίες και
 # διαχωρίζει από τα υπόλοιπα ορίσματα. Οι σημαίες αποθηκεύονται στην μεταβλητή
@@ -127,11 +127,11 @@ mono_onomata_arxeion:
 
 			switch ( $fileext )
 
-			case "c":
+			case "c":                               # C
 				~/bin/runSubroutines/run_c $filename
 				breaksw
 
-			case "cc":
+			case "cc":                              # C++
 			case "cp":
 			case "cxx":
 			case "cpp":
@@ -141,7 +141,7 @@ mono_onomata_arxeion:
 				~/bin/runSubroutines/run_cpp $filename
 				breaksw
 
-			case "f":
+			case "f":                               # Fortran
 			case "for":
 			case "ftn":
 			case "F":
@@ -160,20 +160,20 @@ mono_onomata_arxeion:
 				~/bin/runSubroutines/run_for $filename
 				breaksw
 
-			case "java":
+			case "java":                            # Java
 				~/bin/runSubroutines/run_java $filename
 				breaksw
 
-			case "make":
+			case "make":                            # Makefile with .make extention
 				~/bin/runSubroutines/run_make $filename
 				breaksw
 
-			case "2e":
+			case "2e":                              # TeX/LaTeX
 			case "tex":
 				~/bin/runSubroutines/run_latex $filename
 				breaksw
 
-			case "tar":
+			case "tar":                             # Compressed files
 			case "TAR":
 			case "zip":
 			case "ZIP":
@@ -184,10 +184,22 @@ mono_onomata_arxeion:
 				~/bin/runSubroutines/run_decompress $filename
 				breaksw
 
-			case "py":
-			case "pl":
+			case "py":                              # Python
+			case "pl":								# Perl
 				~/bin/runSubroutines/run_script $filename
 				breaksw
+
+            case "":                                # [mM]akefile
+                if ( $fileroot == "makefile" ) then
+                    ~/bin/runSubroutines/run_make makefile
+				    breaksw
+                else if ( $fileroot == "Makefile" ) then
+                    ~/bin/runSubroutines/run_make Makefile
+				    breaksw
+                else
+                    echo "Το αρχείο $fileroot δεν είναι makefile"
+                    exit 1
+                endif
 
 			default:
 				echo "Το αρχείο $filename δεν είναι πηγαίο αρχείο"
