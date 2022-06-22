@@ -10,6 +10,16 @@ set objectfile = $executablefile.o
 set projectfile = "$PWD:t.pro"
 set boostdir = /usr/local/lib
 
+# Compiler flags defined here
+# -g in RUN_FLAGS adds -g compiler flag and enables _GLIBCXX_DEBUG
+# Normal run enables NDEBUG
+if ( `echo $RUN_FLAGS | grep -c -e "-g"` == 1 ) then
+	set CXXFLAGS = "-Wshadow -Wformat=2 -Wfloat-equal -Wconversion -Wextra -Wall -O2 -pedantic -std=c++17 -pthread -D_GLIBCXX_DEBUG -g"
+else
+	set CXXFLAGS = "-Wshadow -Wformat=2 -Wfloat-equal -Wconversion -Wextra -Wall -O2 -pedantic -std=c++17 -pthread -DNDEBUG"
+endif
+
+
 if ( `echo $RUN_FLAGS | grep -c -e "-b"` == 1 ) then
 	set boost
 	set boostLink = ""
@@ -46,23 +56,13 @@ else
 
     	if ( `echo $RUN_FLAGS | grep -c -e "-c"` == 1 ) then
 
-			if ( `echo $RUN_FLAGS | grep -c -e "-g"` == 1 ) then
-		    	g++ -c -g -std=c++17 -pthread -o $objectfile $sourcefile $boostLink
-				set STATUS = $status
-			else
-		    	g++ -c -std=c++17 -pthread -o $objectfile $sourcefile $boostLink
-				set STATUS = $status
-			endif
+	    	g++ -c $CXXFLAGS -o $objectfile $sourcefile $boostLink
+			set STATUS = $status
 
 	    else
 
-			if ( `echo $RUN_FLAGS | grep -c -e "-g"` == 1 ) then
-			    g++ -g -std=c++17 -pthread -o $executablefile $sourcefile $boostLink
-				set STATUS = $status
-			else
-				g++ -std=c++17 -pthread -o $executablefile $sourcefile $boostLink
-				set STATUS = $status
-			endif
+		    g++ $CXXFLAGS -o $executablefile $sourcefile $boostLink
+			set STATUS = $status
 
 	    	if ( $STATUS == 0 ) clear
 		    ./$executablefile
@@ -73,23 +73,13 @@ else
 
         if ( `echo $RUN_FLAGS | grep -c -e "-c"` == 1 ) then
 
-			if ( `echo $RUN_FLAGS | grep -c -e "-g"` == 1 ) then
-		    	g++ -c -g std=c++17 -pthread -o $objectfile $sourcefile
-				set STATUS = $status
-			else
-		    	g++ -c -std=c++17 -pthread -o $objectfile $sourcefile
-				set STATUS = $status
-			endif
+	    	g++ -c $CXXFLAGS -o $objectfile $sourcefile
+			set STATUS = $status
 
 	    else
 
-			if ( `echo $RUN_FLAGS | grep -c -e "-g"` == 1 ) then
-			    g++ -g -std=c++17 -pthread -o $executablefile $sourcefile
-				set STATUS = $status
-			else
-			    g++ -std=c++17 -pthread -o $executablefile $sourcefile
-				set STATUS = $status
-			endif
+		    g++ $CXXFLAGS -o $executablefile $sourcefile
+			set STATUS = $status
 
 	    	if ( $STATUS == 0 ) clear
 		    ./$executablefile

@@ -6,7 +6,19 @@
 set sourcefile = $argv[1]
 set executablefile = $sourcefile:r
 
-make -f $sourcefile
-clear
-./$executablefile
-if ( `echo $RUN_FLAGS | grep -c -e "-k"` != 1 ) rm $executablefile *.o *.mod	
+
+if ( $sourcefile == "makefile" || $sourcefile == "Makefile" ) then
+
+  if ( `echo $RUN_FLAGS | grep -c -e "-c"` == 1 ) then
+		make compile
+  else
+		make -f $sourcefile
+		clear
+	    ./target
+  endif
+  if ( `echo $RUN_FLAGS | grep -c -e "-k"` != 1 ) make clean
+
+else
+  ./$executablefile
+  if ( `echo $RUN_FLAGS | grep -c -e "-k"` != 1 ) rm $executablefile *.o *.mod	
+endif
